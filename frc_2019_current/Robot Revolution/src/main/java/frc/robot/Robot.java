@@ -33,6 +33,7 @@ public class Robot extends TimedRobot {
 
     DifferentialDrive _diffDrive = new DifferentialDrive(leftFront, rightFront);
 
+    //main pilot joystick
     Joystick _joystick = new Joystick(1);
 
     Faults _faults_L = new Faults();
@@ -40,6 +41,14 @@ public class Robot extends TimedRobot {
 
     Encoder encoderLeftDrive;
     Encoder encoderRightDrive;
+
+    //secondary joystick and talons for climb
+    Joystick _joystickClimb = new Joystick(1);
+    WPI_TalonSRX leftClimb = new WPI_TalonSRX(5);
+    WPI_TalonSRX rightClimb = new WPI_TalonSRX(6);
+    DifferentialDrive _diffDriveClimb = new DifferentialDrive(leftClimb, rightClimb);
+
+    WPI_TalonSRX intakeTalon = new WPI_TalonSRX(7);
 
     @Override
     public void teleopPeriodic() {
@@ -127,7 +136,15 @@ public class Robot extends TimedRobot {
         // }
         
         
+        // for Climb
+        double ClimbSpeed = -1 * _joystickClimb.getRawAxis(1);          //left joystick
 
+        _diffDriveClimb.tankDrive(ClimbSpeed,-1*ClimbSpeed);
+
+        // for Intake
+        double intakeSpeed = -1 * _joystickClimb.getRawAxis(5)          //right joystick
+
+        
     }
 
     @Override
