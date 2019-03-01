@@ -1,110 +1,115 @@
-// package frc.robot.subsystems;
-// import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+package frc.robot.subsystems;
 
-// import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.utils.*;
 
-// import com.ctre.phoenix.motorcontrol.Faults;
-// import com.ctre.phoenix.motorcontrol.InvertType;
-// //import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
-// import edu.wpi.first.wpilibj.Joystick;
-// //import edu.wpi.first.wpilibj.TimedRobot;
-// import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 
-// public class Chassis extends Subsystem{
-//     WPI_TalonSRX rightFront = new WPI_TalonSRX(1);
-//     WPI_TalonSRX rightFollower = new WPI_TalonSRX(2);
-//     WPI_TalonSRX leftFront = new WPI_TalonSRX(3);
-//     WPI_TalonSRX leftFollower = new WPI_TalonSRX(4);
-    
-//     DifferentialDrive _diffDrive = new DifferentialDrive(leftFront, rightFront);
+public class Chassis extends Subsystem{
+    /* drive Talon motor controllers */
+    WPI_TalonSRX rightFront;
+    WPI_TalonSRX rightFollower;
+    WPI_TalonSRX leftFront;
+    WPI_TalonSRX leftFollower;
 
-//     Joystick _joystick = new Joystick(1);
+    /* set Talon IDs */
+    private final int RFRONT_TALON_ID = 6;
+    private final int RFOLLOWER_TALON_ID = 7;
+    private final int LFRONT_TALON_ID = 8;
+    private final int LFOLLOWER_TALON_ID = 9;
 
-//     Faults _faults_L = new Faults();
-//     Faults _faults_R = new Faults();
-    
-//     public void initDefaultCommand(){
-//     }
+    /* speed variables */
+    double leftSpeed;
+    double rightSpeed;
+    double straightForward;
+    double straightBackward;
+    private final int SLOW_FACTOR = 1; // divide speed
 
-//     // public void teleopPeriodic() {
+    /* drive type */
+    DifferentialDrive diffDriveTank;
 
-//     //     // String work = "";
+    public void initDefaultCommand(){
+    }
 
-//     //     /* get gamepad stick values */
-//     //     double leftSpeed = -1 * _joystick.getRawAxis(1);
-//     //     double rightSpeed = -1 * _joystick.getRawAxis(5);
-//     //     //boolean btn1 = _joystick.getRawButton(1); /* is button is down, print joystick values */
+    /* init settings */
+    public void chassisInit(){
+        /* setup drive motor controllers */
+        rightFront = new WPI_TalonSRX(RFRONT_TALON_ID);
+        rightFollower = new WPI_TalonSRX(RFOLLOWER_TALON_ID);
+        leftFront = new WPI_TalonSRX(LFRONT_TALON_ID);
+        leftFollower = new WPI_TalonSRX(LFOLLOWER_TALON_ID);
 
-//     //     /* deadband gamepad 10% */
-//     //     if (Math.abs(leftSpeed) < 0.10) {
-//     //       leftSpeed = 0;
-//     //     }
-//     //     if (Math.abs(rightSpeed) < 0.10) {
-//     //         rightSpeed = 0;
-//     //     }
+        /* factory default values */
+        rightFront.configFactoryDefault();
+        rightFollower.configFactoryDefault();
+        leftFront.configFactoryDefault();
+        leftFollower.configFactoryDefault();
 
-//     //     /* drive robot */
-//     //     _diffDrive.tankDrive(leftSpeed, rightSpeed);
+        /* set up followers */
+        rightFollower.follow(rightFront);
+        leftFollower.follow(leftFront);
 
-//     //     // work += " GF:" + leftSpeed + " GT:" + rightSpeed;
+        /* set motor controllers to brake vs coast */
+        rightFront.setNeutralMode(NeutralMode.Brake);
+        rightFollower.setNeutralMode(NeutralMode.Brake);
+        leftFront.setNeutralMode(NeutralMode.Brake);
+        leftFollower.setNeutralMode(NeutralMode.Brake);
 
-//     //     /* get sensor values */
-//     //     //double leftVelUnitsPer100ms = leftFront.getSelectedSensorVelocity(0);
-//     //     //double rghtVelUnitsPer100ms = rightFront.getSelectedSensorVelocity(0);
+        /* flip values so robot moves forward when stick-forward/LEDs-green */
+        rightFront.setInverted(true);
+        leftFront.setInverted(false);
+        rightFollower.setInverted(InvertType.FollowMaster);
+        leftFollower.setInverted(InvertType.FollowMaster);
 
-//     //     //work += " L:" + leftVelUnitsPer100ms + " R:" + rghtVelUnitsPer100ms;
+        /* adjust sensor phase so sensor moves positive when Talon LEDs are green */
+        rightFront.setSensorPhase(true);
+        leftFront.setSensorPhase(true);
 
-//     //     /*
-//     //      * drive motor at least 25%, Talons will auto-detect if sensor is out of phase
-//     //      */
-//     //     leftFront.getFaults(_faults_L);
-//     //     rightFront.getFaults(_faults_R);
+        diffDriveTank = new DifferentialDrive(leftFront, rightFront);
 
-//     //     // if (_faults_L.SensorOutOfPhase) {
-//     //     //     work += " L sensor is out of phase";
-//     //     // }
-//     //     // if (_faults_R.SensorOutOfPhase) {
-//     //     //     work += " R sensor is out of phase";
-//     //     // }
+        /* WPI drivetrain classes defaultly assume left and right are opposite. call
+         * this so we can apply + to both sides when moving forward. DO NOT CHANGE */
+        diffDriveTank.setRightSideInverted(false);
+    }
 
-//     //     /* print to console if btn1 is held down */
-//     //     // if (btn1) {
-//     //     //     System.out.println(work);
-//     //     // }
-//     // }
+    /* tank drive with triggers */
+    public void drive(){
+        /* backwards straight */
+        if(OI.getDriveTrigger("left") != 0){
+            leftSpeed = 1 * OI.getDriveTrigger("left") / SLOW_FACTOR;
+            rightSpeed = 1 * OI.getDriveTrigger("left") / SLOW_FACTOR;
+        }
+        /* frontwards straight */
+        else if(OI.getDriveTrigger("right") != 0){
+            leftSpeed = -1 * OI.getDriveTrigger("right") / SLOW_FACTOR;
+            rightSpeed = -1 * OI.getDriveTrigger("right") / SLOW_FACTOR;
+        }
+        /* regular joystick drive */
+        else if(OI.getDriveStick("left") != 0 || OI.getDriveStick("right") != 0){
+            /* set speed to joystick values */
+            leftSpeed = 1 * OI.getDriveStick("right") / SLOW_FACTOR;
+            rightSpeed = 1 * OI.getDriveStick("left") / SLOW_FACTOR;
+            straightForward = 1 * OI.getDriveTrigger("left") / SLOW_FACTOR;
+            straightBackward = 1* OI.getDriveTrigger("right") / SLOW_FACTOR;
+        }
+        else{
+            leftSpeed = 0;
+            rightSpeed = 0;
+        }
 
-//     public void robotInit() {
-//         /* factory default values */
-//         rightFront.configFactoryDefault();
-//         rightFollower.configFactoryDefault();
-//         leftFront.configFactoryDefault();
-//         leftFollower.configFactoryDefault();
+        /* deadband gamepad 10% */
+        if (Math.abs(leftSpeed) < 0.10) {
+            leftSpeed = 0;
+        }
+        if (Math.abs(rightSpeed) < 0.10) {
+            rightSpeed = 0;
+        }
 
-//         /* set up followers */
-//         rightFollower.follow(rightFront);
-//         leftFollower.follow(leftFront);
-
-//         /* [3] flip values so robot moves forward when stick-forward/LEDs-green */
-//         rightFront.setInverted(true); // !< Update this
-//         leftFront.setInverted(false); // !< Update this
-
-//         /*
-//          * set the invert of the followers to match their respective master controllers
-//          */
-//         rightFollower.setInverted(InvertType.FollowMaster);
-//         leftFollower.setInverted(InvertType.FollowMaster);
-
-//         /*
-//          * [4] adjust sensor phase so sensor moves positive when Talon LEDs are green
-//          */
-//         rightFront.setSensorPhase(true);
-//         leftFront.setSensorPhase(true);
-
-//         /*
-//          * WPI drivetrain classes defaultly assume left and right are opposite. call
-//          * this so we can apply + to both sides when moving forward. DO NOT CHANGE
-//          */
-//         _diffDrive.setRightSideInverted(false);
-//     }
-// }
+        /* tank drive */
+        diffDriveTank.tankDrive(leftSpeed, rightSpeed);
+    }
+}
