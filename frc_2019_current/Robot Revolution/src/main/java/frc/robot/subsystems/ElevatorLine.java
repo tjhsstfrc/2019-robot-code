@@ -87,13 +87,13 @@ public class ElevatorLine extends Subsystem{
                 hitLow = false;
                 inBetween = false;
             }
-            /* stop commands */
-            if(target.equals("low") && hitLow && !inBetween && !hitMid){ //  if target is low and hit first line
-                elevatorSpeed = 0;
-            }
-            else if(target.equals("mid") && hitMid){ // if target is mid and hit second line
-                elevatorSpeed = 0;
-            }
+            // /* stop commands */
+            // if(target.equals("low") && hitLow && !inBetween && !hitMid){ //  if target is low and hit first line
+            //     elevatorSpeed = 0;
+            // }
+            // else if(target.equals("mid") && hitMid){ // if target is mid and hit second line
+            //     elevatorSpeed = 0;
+            // }
             else{
                 elevatorSpeed = -1 * OI.getIntakeTrigger("right");
             }
@@ -113,8 +113,83 @@ public class ElevatorLine extends Subsystem{
                 elevatorSpeed = 0;
             }
             else{
-                elevatorSpeed = -1 * OI.getIntakeTrigger("left");
+                elevatorSpeed = 1 * OI.getIntakeTrigger("left");
             }
+        }
+        else{
+            elevatorSpeed = 0;
+        }
+
+        /* deadband */
+        if (Math.abs(elevatorSpeed) < 0.20) {
+            elevatorSpeed = 0;
+        } 
+                    /* stop commands */
+                    if(target.equals("low") && hitLow && !inBetween && !hitMid){ //  if target is low and hit first line
+                        elevatorSpeed = 0;
+                    }
+                    else if(target.equals("mid") && hitMid){ // if target is mid and hit second line
+                        elevatorSpeed = 0;
+                    }
+                    /* stop commands */
+            if(target.equals("low") && hitLow){
+                elevatorSpeed = 0;
+            }
+
+        /* set elevator */
+        lift.set(ControlMode.PercentOutput, elevatorSpeed / SPEED_FACTOR);
+
+        /* dashboard prints */
+        if(hitLow && !inBetween && !hitMid){
+            state = "low";
+        }
+        else if(hitLow && inBetween && !hitMid){
+            state = "in between";
+        }
+        else if(!hitLow && !inBetween && hitMid){
+            state = "mid";
+        }
+        else{
+            state = "intake";
+        }
+        
+        SmartDashboard.putString("DB/String 0", "target: " + target);
+        SmartDashboard.putString("DB/String 1", "sensor Val: " + lineSensor.getSensorValue());
+        SmartDashboard.putString("DB/String 2", "line?: " + lineSensor.hitLine());
+    }
+
+    /* We're using this one */
+    public void liftSimple(){
+        /* target select */
+        if(OI.pressedLiftPresetLow()){
+            target = "low";
+        }
+        // else if(OI.pressedLiftPresetMid()){
+        //     target = "mid";
+        // }
+        else if(OI.pressedLiftPresetNone()){
+            target = "none";
+        }
+
+        /* elevator control */
+        if(OI.getIntakeTrigger("right") != 0){
+            if(target.equals("low") && lineSensor.hitLine()){
+                elevatorSpeed = 0; // try comment out this to see if skipping
+            }
+            else{
+                elevatorSpeed = -1 * OI.getIntakeTrigger("right");
+            }
+        }
+        else if(OI.getIntakeTrigger("left") != 0){
+            if(target.equals("low") && lineSensor.hitLine()){
+                elevatorSpeed = 0;
+            }
+            else{
+                elevatorSpeed = 1 * OI.getIntakeTrigger("left");
+            }
+        }
+        else{
+            elevatorSpeed = 0;
         }
 
         /* deadband */
@@ -138,8 +213,141 @@ public class ElevatorLine extends Subsystem{
         else{
             state = "intake";
         }
+        
         SmartDashboard.putString("DB/String 0", "target: " + target);
-        SmartDashboard.putString("DB/String 1", "state: " + state);
+        SmartDashboard.putString("DB/String 1", "sensor Val: " + lineSensor.getSensorValue());
+        SmartDashboard.putString("DB/String 2", "line?: " + lineSensor.hitLine());
+    }
 
+    public void liftNew(){
+        /* target select */
+        if(OI.pressedLiftPresetLow()){
+            target = "low";
+        }
+        else if(OI.pressedLiftPresetNone()){
+            target = "none";
+        }
+
+        /* elevator control */
+        if(OI.getIntakeTrigger("right") != 0){
+            if(target.equals("low") && lineSensor.hitLine()){
+                elevatorSpeed = 0; // try comment out this to see if skipping
+            }
+            else{
+                elevatorSpeed = -1 * OI.getIntakeTrigger("right");
+            }
+        }
+        else if(OI.getIntakeTrigger("left") != 0){
+            if(target.equals("low") && lineSensor.hitLine()){
+                elevatorSpeed = 0;
+            }
+            else{
+                elevatorSpeed = 1 * OI.getIntakeTrigger("left");
+            }
+        }
+        else{
+            elevatorSpeed = 0;
+        }
+
+        /* deadband */
+        if (Math.abs(elevatorSpeed) < 0.20) {
+            elevatorSpeed = 0;
+        } 
+
+        /* set elevator */
+        lift.set(ControlMode.PercentOutput, elevatorSpeed / SPEED_FACTOR);
+
+        /* dashboard prints */
+        if(hitLow && !inBetween && !hitMid){
+            state = "low";
+        }
+        else if(hitLow && inBetween && !hitMid){
+            state = "in between";
+        }
+        else if(!hitLow && !inBetween && hitMid){
+            state = "mid";
+        }
+        else{
+            state = "intake";
+        }
+        
+        SmartDashboard.putString("DB/String 0", "target: " + target);
+        SmartDashboard.putString("DB/String 1", "sensor Val: " + lineSensor.getSensorValue());
+        SmartDashboard.putString("DB/String 2", "line?: " + lineSensor.hitLine());
+    }
+
+    public void liftComplex(){
+        /* target select */
+        if(OI.pressedLiftPresetLow()){
+            target = "low";
+        }
+        else if(OI.pressedLiftPresetMid()){
+            target = "mid";
+        }
+        else if(OI.pressedLiftPresetNone()){
+            target = "none";
+        }
+
+        if(hitLow == false && hitMid == false && lineSensor.hitLine()){
+            hitLow = true;
+            hitMid = false;
+        }
+        else if(hitLow == true && hitMid == false && lineSensor.hitLine()){
+            hitMid = true;
+            hitLow = false;
+        }
+
+        /* elevator control */
+        if(OI.getIntakeTrigger("right") != 0){
+            if(target.equals("low") && hitLow == true){
+                elevatorSpeed = 0;
+            }
+            else if(target.equals("mid") && hitMid == true){
+                elevatorSpeed = 0;
+            }
+            else{
+                elevatorSpeed = -1 * OI.getIntakeTrigger("right");
+            }
+        }
+        else if(OI.getIntakeTrigger("left") != 0){
+            if(target.equals("low") && hitLow == true){
+                elevatorSpeed = 0;
+            }
+            else if(target.equals("mid") && hitMid == true){
+                elevatorSpeed = 0;
+            }
+            else{
+                elevatorSpeed = 1 * OI.getIntakeTrigger("left");
+            }
+        }
+        else{
+            elevatorSpeed = 0;
+        }
+
+        /* deadband */
+        if (Math.abs(elevatorSpeed) < 0.20) {
+            elevatorSpeed = 0;
+        } 
+
+        /* set elevator */
+        lift.set(ControlMode.PercentOutput, elevatorSpeed / SPEED_FACTOR);
+
+        /* dashboard prints */
+        if(hitLow && !inBetween && !hitMid){
+            state = "low";
+        }
+        else if(hitLow && inBetween && !hitMid){
+            state = "in between";
+        }
+        else if(!hitLow && !inBetween && hitMid){
+            state = "mid";
+        }
+        else{
+            state = "intake";
+        }
+        
+        SmartDashboard.putString("DB/String 0", "target: " + target);
+        SmartDashboard.putString("DB/String 1", "sensor Val: " + lineSensor.getSensorValue());
+        SmartDashboard.putString("DB/String 2", "line?: " + lineSensor.hitLine());
     }
 }

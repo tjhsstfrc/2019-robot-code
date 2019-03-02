@@ -1,0 +1,10 @@
+{
+	"folders": [
+		{
+			"path": "Robot Revolution"
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "automatic"
+	}
+}

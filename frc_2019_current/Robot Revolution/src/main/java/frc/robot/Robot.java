@@ -19,8 +19,8 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousPeriodic() {
         drive.drive();
+        lift.liftSimple();
         intake.intake();
-        lift.lift();
     }
 
     @Override
@@ -40,16 +40,16 @@ public class Robot extends TimedRobot {
         /* create utility objects */
         camera = new Camera();
 
-        /* run utility inits */
-        camera.cameraInit();
+        // /* run utility inits */
+        // camera.cameraInit();
     }
 
     /* teleop */
     @Override
     public void teleopPeriodic() {
         drive.drive();
+        lift.liftSimple();
         intake.intake();
-        lift.lift();
     }
 
     @Override
