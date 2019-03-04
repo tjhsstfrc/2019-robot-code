@@ -14,6 +14,7 @@ public class Robot extends TimedRobot {
 
     /* utitlities */
     Camera camera;
+    //Camera2 camera2;
 
     /* sandstorm - code exactly same code as teleop */
     @Override
@@ -39,9 +40,11 @@ public class Robot extends TimedRobot {
 
         /* create utility objects */
         camera = new Camera();
+        //camera2 = new Camera2();
 
         // /* run utility inits */
-        // camera.cameraInit();
+        camera.cameraInit();
+        //camera2.cameraInit2();
     }
 
     /* teleop */
@@ -72,8 +75,20 @@ public class Robot extends TimedRobot {
 
         /* create utility objects */
         camera = new Camera();
+        //camera2 = new Camera2();
 
         /* run utility inits */
         camera.cameraInit();
+        //camera2.cameraInit2();
+    }
+
+    @Override
+    public void disabledInit(){
+        // camera = new Camera();
+        // camera.cameraInit();
+    }
+
+    @Override
+    public void robotPeriodic(){
     }
 }

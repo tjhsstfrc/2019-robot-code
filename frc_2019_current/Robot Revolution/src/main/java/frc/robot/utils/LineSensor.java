@@ -4,13 +4,13 @@ import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj.AnalogInput;
 
 public class LineSensor {
-    AnalogInput lineSensor = new AnalogInput(0); // static
+    static AnalogInput lineSensor = new AnalogInput(0); // static
     
     /* value the IR sensor reads as a line 
      * - may need to adjust depending on environment */
-    private final int HIT_VALUE = 170; // static
+    private static final int HIT_VALUE = 170; // static
 
-    private boolean hit = false; // static
+    private static boolean hit = false; // static
 
     public void printSensorValue(){
         SmartDashboard.putString("DB/String 1", lineSensor.getValue() + "");

@@ -20,7 +20,7 @@ public class ElevatorLine extends Subsystem{
 
     /* speed variables */
     double liftSpeed ;
-    private final int SPEED_FACTOR = 2;
+    private final double SPEED_FACTOR = 1.4;
 
     private double elevatorSpeed;
 
@@ -274,6 +274,50 @@ public class ElevatorLine extends Subsystem{
         SmartDashboard.putString("DB/String 0", "target: " + target);
         SmartDashboard.putString("DB/String 1", "sensor Val: " + lineSensor.getSensorValue());
         SmartDashboard.putString("DB/String 2", "line?: " + lineSensor.hitLine());
+    }
+
+    public void liftSimpleSimple(){
+            /* elevator control */
+            if(OI.getIntakeTrigger("right") != 0){
+                if(lineSensor.hitLine()){
+                    elevatorSpeed = 0;
+                }
+                else{
+                    elevatorSpeed = -1 * OI.getIntakeTrigger("right");
+                }
+            }
+            else if(OI.getIntakeTrigger("left") != 0){
+                elevatorSpeed = 1 * OI.getIntakeTrigger("left");
+            }
+            else{
+                elevatorSpeed = 0;
+            }
+    
+            /* deadband */
+            if (Math.abs(elevatorSpeed) < 0.20) {
+                elevatorSpeed = 0;
+            } 
+    
+            /* set elevator */
+            lift.set(ControlMode.PercentOutput, elevatorSpeed / SPEED_FACTOR);
+    
+            /* dashboard prints */
+            if(hitLow && !inBetween && !hitMid){
+                state = "low";
+            }
+            else if(hitLow && inBetween && !hitMid){
+                state = "in between";
+            }
+            else if(!hitLow && !inBetween && hitMid){
+                state = "mid";
+            }
+            else{
+                state = "intake";
+            }
+            
+            SmartDashboard.putString("DB/String 0", "target: " + target);
+            SmartDashboard.putString("DB/String 1", "sensor Val: " + lineSensor.getSensorValue());
+            SmartDashboard.putString("DB/String 2", "line?: " + lineSensor.hitLine());
     }
 
     public void liftComplex(){

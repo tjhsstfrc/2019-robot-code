@@ -17,7 +17,7 @@ public class Intake extends Subsystem{
 
     /* speed settings by percent output */
     private final double INTAKE_SPEED = 0.2;
-    private final double OUTTAKE_SPEED = 0.75;
+    private final double OUTTAKE_SPEED = 0.95;
     private final double REVERSE_OUTTAKE_SPEED = 0.50;
 
     /* speed variables */
