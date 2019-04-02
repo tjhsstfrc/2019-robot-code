@@ -19,15 +19,16 @@ public class OI {
     private static final int INTAKE = 1; // intake button
     private static final int OUTTAKE = 5; // intake button
     private static final int REVERSE_OUTTAKE = 3; // intake button
-    private static final int LOW_PRESET = 2; // intake button
-    private static final int MID_PRESET = 4; // intake button
-    private static final int RESET_PRESET = 6; // intake button
+    private static final int LOW_PRESET = 6; // intake button
+    private static final int MID_PRESET = 2; // intake button
+    //private static final int RESET_PRESET = 6; // intake button
     private static final int LEFT_DRIVE = 1; // driver joystick axis
     private static final int RIGHT_DRIVE = 5; // driver joystick axis
     private static final int BACK_STRAIGHT = 2; // driver joystick axis
     private static final int FRONT_STRAIGHT = 3; // driver joystick axis
     private static final int LOWER_ELEVATOR = 2; // intake joystick axis
     private static final int RAISE_ELEVATOR = 3; // intake joystick axis
+    private static final int FULL_BACK = 5;
     
     /* ===== driver controls ===== */
     public static double getDriveStick(String side){
@@ -56,6 +57,10 @@ public class OI {
             triggerValue = 0;
         }
         return triggerValue;
+    }
+
+    public static boolean pressedFullBack(){
+        return driveController.getRawButton(FULL_BACK);
     }
 
     /* ===== intake controls ===== */
@@ -93,7 +98,7 @@ public class OI {
         return intakeController.getRawButton(MID_PRESET);
     }
 
-    public static boolean pressedLiftPresetNone(){
-        return intakeController.getRawButton(RESET_PRESET);
-    }
+    // public static boolean pressedLiftPresetNone(){
+    //     return intakeController.getRawButton(RESET_PRESET);
+    // }
 }

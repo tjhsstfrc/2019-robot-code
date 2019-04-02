@@ -1,5 +1,7 @@
 package frc.robot.utils;
 
+import frc.robot.utils.*;
+
 import org.opencv.imgproc.Imgproc;
 
 import org.opencv.core.Mat;
@@ -16,15 +18,40 @@ public class Camera {
 
     private CameraServer cameraserver;
     private UsbCamera gearCamera;
+    private CvSink gearVideo1;
+
+
+    private CameraServer cameraserver1;
+    private UsbCamera gearCamera1;
+
     private CvSink gearVideo;
+
+    private int camInt;
+
+    public Camera(int i){
+        camInt = i;
+    }
+
+    public void switchCamera(){
+        // if input = A, B, C
+    }
+
     public void cameraInit(){
         new Thread(() -> {
             cameraserver = CameraServer.getInstance();
-            gearCamera = cameraserver.startAutomaticCapture(0); 
+            gearCamera = cameraserver.startAutomaticCapture(camInt); 
             gearCamera.setResolution(320, 240);
             gearCamera.setFPS(30);
             gearVideo = cameraserver.getVideo(gearCamera);
-            
+            /*
+            cameraserver1 = CameraServer.getInstance();
+            gearCamera1 = cameraserver1.startAutomaticCapture(camInt+1); 
+            gearCamera1.setResolution(320, 240);
+            gearCamera1.setFPS(30);
+            gearVideo1 = cameraserver1.getVideo(gearCamera1);
+            */
+
+
             CvSink cvSink = CameraServer.getInstance().getVideo(); // get a CvSink. This will capture Mats from the camera
             CvSource outputStream = CameraServer.getInstance().putVideo("Rectangle", 640, 480); // setup a CvSource. This will send images back to the Dashboard
             Mat mat = new Mat(); // Mats are very memory expensive. Lets reuse this Mat.

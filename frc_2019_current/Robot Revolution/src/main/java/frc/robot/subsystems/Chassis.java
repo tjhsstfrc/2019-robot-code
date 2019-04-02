@@ -88,6 +88,10 @@ public class Chassis extends Subsystem{
             leftSpeed = -1 * OI.getDriveTrigger("right") / SLOW_FACTOR;
             rightSpeed = -1 * OI.getDriveTrigger("right") / SLOW_FACTOR;
         }
+        else if(OI.pressedFullBack()){
+            leftSpeed = 1;
+            rightSpeed = 1;
+        }
         /* regular joystick drive */
         else if(OI.getDriveStick("left") != 0 || OI.getDriveStick("right") != 0){
             /* set speed to joystick values */

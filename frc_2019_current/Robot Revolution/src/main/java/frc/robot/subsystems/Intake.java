@@ -19,6 +19,7 @@ public class Intake extends Subsystem{
     private final double INTAKE_SPEED = 0.2;
     private final double OUTTAKE_SPEED = 0.95;
     private final double REVERSE_OUTTAKE_SPEED = 0.50;
+    private final double REVERSE_SLOW_OUTTAKE_SPEED = 0.10;
 
     /* speed variables */
     double intakeSpeed;
@@ -47,6 +48,9 @@ public class Intake extends Subsystem{
         }
         else if(OI.pressedReverse()){ // outtake from bottom
             intakeSpeed = REVERSE_OUTTAKE_SPEED;
+        }
+        else if(OI.pressedLiftPresetMid()){
+            intakeSpeed = REVERSE_SLOW_OUTTAKE_SPEED;
         }
         else{
             intakeSpeed = 0;
